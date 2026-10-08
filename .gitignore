@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Compiler-generated CUDA output (see compiler/.gitignore for detail)
+compiler/generated/*
+!compiler/generated/.gitkeep
+
+# Downloaded torchvision datasets + per-run acceleration artifacts
+webapp/data/*
+!webapp/data/.gitkeep
+
+# Node / frontend
+webapp/frontend/node_modules/
+webapp/frontend/dist/
+webapp/frontend/.vite/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store

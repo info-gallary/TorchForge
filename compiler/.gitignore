@@ -1,0 +1,21 @@
+# Generated compiler output (.cu, .exe, dumped tensors, build artifacts)
+generated/*
+!generated/.gitkeep
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Stray native build artifacts, in case nvcc is ever run outside generated/
+*.exe
+*.obj
+*.exp
+*.lib
+*.pdb
+*.nct
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
