@@ -17,6 +17,8 @@ from pydantic import BaseModel
 
 from app.codegen import generate_script
 from app.datasets import get_dataset_spec, list_datasets
+from app.diagram import PALETTES as DIAGRAM_PALETTES
+from app.diagram import STYLES as DIAGRAM_STYLES
 from app.diagram import render_diagram
 from app.graph import GraphError, resolve_dag
 from app.layers import LAYER_SPECS, build_dag
@@ -59,6 +61,11 @@ class CodeExportRequest(GraphRequest):
 
 class DiagramRequest(GraphRequest):
     style: str = "flow"  # "flow" | "graph" | "lenet" (visualtorch's styles)
+    legend: bool = False
+    show_dimension: bool = False
+    palette: str = "okabe_ito"
+    draw_volume: bool = True
+    hide_activations: bool = False
 
 
 def _dump(req: GraphRequest):
@@ -129,6 +136,11 @@ def api_code_export(req: CodeExportRequest):
         return {"code": None, "error": str(e)}
 
 
+@app.get("/api/diagram_options")
+def api_diagram_options():
+    return {"styles": list(DIAGRAM_STYLES), "palettes": DIAGRAM_PALETTES}
+
+
 @app.post("/api/diagram")
 def api_diagram(req: DiagramRequest):
     try:
@@ -137,7 +149,9 @@ def api_diagram(req: DiagramRequest):
         order_ids, nodes_by_id, incoming, outgoing, source_id, sink_id = resolve_dag(nodes, edges)
         png_bytes = render_diagram(
             order_ids, nodes_by_id, incoming, outgoing, source_id, sink_id,
-            tuple(spec["input_shape"]), style=req.style,
+            tuple(spec["input_shape"]), style=req.style, legend=req.legend,
+            show_dimension=req.show_dimension, palette=req.palette,
+            draw_volume=req.draw_volume, hide_activations=req.hide_activations,
         )
         return Response(content=png_bytes, media_type="image/png")
     except (GraphError, ValueError) as e:

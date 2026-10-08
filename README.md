@@ -17,6 +17,24 @@ TorchForge/
   webapp/     the drag-and-drop canvas + training UI (FastAPI + React/React Flow)
 ```
 
+## Diagram gallery
+
+Every image below is a real, generated diagram of an architecture built
+through TorchForge's own DAG builder (`webapp/backend/app/graph.py` +
+`app/layers.py`), rendered via `visualtorch` — not hand-drawn or
+sourced from elsewhere.
+
+| | |
+|---|---|
+| **3D volumetric, legend + output shapes**<br>`style="flow"`, `legend=True`, `show_dimension=True`<br><img src="docs/images/diagram_flow_3d.png" width="380"> | **Flat 2D, custom palette**<br>`style="flow"`, `draw_volume=False`, `palette="tab10"`<br><img src="docs/images/diagram_flow_flat.png" width="380"> |
+| **LeNet style**<br>`style="lenet"`<br><img src="docs/images/diagram_lenet.png" width="380"> | **Hide activation layers**<br>`style="flow"`, `hide_activations=True`, `palette="nord"`<br><img src="docs/images/diagram_hide_activations.png" width="380"> |
+| **Neuron-level detail**<br>`style="graph"`, a tiny Linear/ReLU/Linear model<br><img src="docs/images/diagram_graph_neurons.png" width="380"> | **Skip connection (Add-merge branch)**<br>`style="graph"`, two Conv2D branches merged back together<br><img src="docs/images/diagram_skip_connection.png" width="380"> |
+
+Every style/legend/palette/flat-vs-3D/hide-activations option above is
+a live toggle in the webapp's "Diagram options" panel, not just a
+backend capability — see `/api/diagram_options` and
+`webapp/frontend/src/components/TrainPanel.jsx`.
+
 ## Two halves, one honest integration
 
 **`compiler/`** is a real, deterministic compiler: lexer → parser →
@@ -105,7 +123,10 @@ python -m unittest discover -s tests    # 25 tests, including a real GPU bridge 
   and the exported minimal code all handle this correctly — see
   `webapp/backend/app/graph.py` and `app/layers.py`.
 - **Architecture diagrams** via the real `visualtorch` PyPI package
-  (`webapp/backend/app/diagram.py`), not a custom renderer.
+  (`webapp/backend/app/diagram.py`), not a custom renderer — with
+  style (flow/graph/lenet), legend, output-shape labels, color palette,
+  flat-vs-3D, and hide-activation-layers all exposed as live UI toggles.
+  See the [gallery](#diagram-gallery) above.
 - **`load("path.nct")`** in NeuroLang itself (`compiler/src/`), the
   piece that makes compiling *trained* weights through real CUDA
   kernels possible, rather than only ever compiling fresh random data.

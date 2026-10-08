@@ -31,14 +31,24 @@ export async function fetchCodeExport({ dataset, nodes, edges, epochs, batch_siz
   return res.json();
 }
 
+export async function fetchDiagramOptions() {
+  const res = await fetch(`${API_BASE}/api/diagram_options`);
+  return res.json();
+}
+
 /** Returns an object URL for the rendered diagram PNG, or throws with the
  * backend's error text on an invalid graph. Caller should revokeObjectURL
  * the previous one before requesting a new diagram to avoid leaking memory. */
-export async function fetchDiagram({ dataset, nodes, edges, style = "flow" }) {
+export async function fetchDiagram({
+  dataset, nodes, edges, style = "flow", legend = false, show_dimension = false,
+  palette = "okabe_ito", draw_volume = true, hide_activations = false,
+}) {
   const res = await fetch(`${API_BASE}/api/diagram`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ dataset, nodes, edges, style }),
+    body: JSON.stringify({
+      dataset, nodes, edges, style, legend, show_dimension, palette, draw_volume, hide_activations,
+    }),
   });
   if (!res.ok) {
     const text = await res.text();

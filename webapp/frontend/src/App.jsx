@@ -5,7 +5,8 @@ import NodePalette from "./components/NodePalette";
 import Inspector from "./components/Inspector";
 import TrainPanel from "./components/TrainPanel";
 import {
-  fetchDatasets, fetchLayers, fetchShapePreview, fetchCodeExport, fetchDiagram, startTraining,
+  fetchDatasets, fetchLayers, fetchShapePreview, fetchCodeExport, fetchDiagram,
+  fetchDiagramOptions, startTraining,
 } from "./api";
 
 function toGraphPayload(nodes, edges) {
@@ -38,6 +39,11 @@ export default function App() {
   const [exportedCode, setExportedCode] = useState(null);
   const [diagramUrl, setDiagramUrl] = useState(null);
   const [diagramError, setDiagramError] = useState(null);
+  const [diagramOptions, setDiagramOptions] = useState({ styles: ["flow", "graph", "lenet"], palettes: ["okabe_ito"] });
+  const [diagramConfig, setDiagramConfig] = useState({
+    style: "flow", legend: false, show_dimension: false, palette: "okabe_ito",
+    draw_volume: true, hide_activations: false,
+  });
   const [neurocudaResult, setNeurocudaResult] = useState(null);
   const wsRef = useRef(null);
   const diagramUrlRef = useRef(null);
@@ -45,7 +51,10 @@ export default function App() {
   useEffect(() => {
     fetchDatasets().then(setDatasets).catch((e) => setLog((l) => [...l, `error loading datasets: ${e}`]));
     fetchLayers().then(setLayerSpecs).catch((e) => setLog((l) => [...l, `error loading layers: ${e}`]));
+    fetchDiagramOptions().then(setDiagramOptions).catch(() => {});
   }, []);
+
+  const onDiagramConfigChange = (key, value) => setDiagramConfig((c) => ({ ...c, [key]: value }));
 
   const nodesKey = nodes.map((n) => `${n.id}:${JSON.stringify(n.data.params)}`).join(",");
 
@@ -153,7 +162,7 @@ export default function App() {
   const onViewDiagram = async () => {
     const payload = toGraphPayload(nodes, edges);
     try {
-      const url = await fetchDiagram({ dataset, ...payload, style: "flow" });
+      const url = await fetchDiagram({ dataset, ...payload, ...diagramConfig });
       if (diagramUrlRef.current) {
         URL.revokeObjectURL(diagramUrlRef.current);
       }
@@ -219,6 +228,9 @@ export default function App() {
           onViewDiagram={onViewDiagram}
           diagramUrl={diagramUrl}
           diagramError={diagramError}
+          diagramOptions={diagramOptions}
+          diagramConfig={diagramConfig}
+          onDiagramConfigChange={onDiagramConfigChange}
           neurocudaResult={neurocudaResult}
           shapeError={shapeError}
         />

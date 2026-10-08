@@ -6,6 +6,7 @@ export default function TrainPanel({
   status, log, lossSeries, accSeries,
   onTrain, onExportCode, exportedCode,
   onViewDiagram, diagramUrl, diagramError,
+  diagramOptions, diagramConfig, onDiagramConfigChange,
   neurocudaResult,
   shapeError,
 }) {
@@ -62,6 +63,67 @@ export default function TrainPanel({
           {shapeError}
         </div>
       )}
+
+      <details style={{ marginBottom: 10, fontSize: 12 }}>
+        <summary style={{ cursor: "pointer", color: "#555" }}>Diagram options</summary>
+        <div style={{ marginTop: 8, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+          <label>
+            Style
+            <select
+              value={diagramConfig.style}
+              onChange={(e) => onDiagramConfigChange("style", e.target.value)}
+              style={{ display: "block", width: "100%", marginTop: 2, padding: 3 }}
+            >
+              {diagramOptions.styles.map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Palette
+            <select
+              value={diagramConfig.palette}
+              onChange={(e) => onDiagramConfigChange("palette", e.target.value)}
+              style={{ display: "block", width: "100%", marginTop: 2, padding: 3 }}
+            >
+              {diagramOptions.palettes.map((p) => (
+                <option key={p} value={p}>{p}</option>
+              ))}
+            </select>
+          </label>
+        </div>
+        <div style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 4 }}>
+          <label>
+            <input
+              type="checkbox"
+              checked={diagramConfig.legend}
+              onChange={(e) => onDiagramConfigChange("legend", e.target.checked)}
+            /> Legend
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              checked={diagramConfig.show_dimension}
+              onChange={(e) => onDiagramConfigChange("show_dimension", e.target.checked)}
+            /> Show output shapes
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              checked={diagramConfig.draw_volume}
+              onChange={(e) => onDiagramConfigChange("draw_volume", e.target.checked)}
+              disabled={diagramConfig.style !== "flow"}
+            /> 3D volumetric (flow style only)
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              checked={diagramConfig.hide_activations}
+              onChange={(e) => onDiagramConfigChange("hide_activations", e.target.checked)}
+            /> Hide activation layers
+          </label>
+        </div>
+      </details>
 
       <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
         <button
