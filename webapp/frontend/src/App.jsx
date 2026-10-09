@@ -8,6 +8,7 @@ import {
   fetchDatasets, fetchLayers, fetchShapePreview, fetchCodeExport, fetchDiagram,
   fetchDiagramOptions, startTraining,
 } from "./api";
+import { EXAMPLES } from "./examples";
 
 function toGraphPayload(nodes, edges) {
   return {
@@ -159,6 +160,57 @@ export default function App() {
     setExportedCode(result.code);
   };
 
+  const onLoadExample = (key) => {
+    const example = EXAMPLES[key];
+    if (!example) return;
+
+    wsRef.current?.close();
+    if (diagramUrlRef.current) {
+      URL.revokeObjectURL(diagramUrlRef.current);
+      diagramUrlRef.current = null;
+    }
+
+    setDataset(example.dataset);
+    setNodes(
+      example.nodes.map((n) => {
+        const spec = layerSpecs[n.type] || {};
+        const defaultParams = Object.fromEntries(
+          Object.entries(spec.params || {}).map(([k, d]) => [k, d.default]),
+        );
+        return {
+          id: n.id,
+          type: "layerNode",
+          position: n.position,
+          data: {
+            layerType: n.type,
+            label: spec.label || n.type,
+            category: spec.category || "other",
+            params: { ...defaultParams, ...n.params },
+            shapeText: null,
+          },
+        };
+      }),
+    );
+    setEdges(
+      example.edges.map((e, i) => ({
+        id: `example-${key}-${i}`,
+        source: e.source,
+        target: e.target,
+        targetHandle: e.targetHandle,
+      })),
+    );
+    setSelectedNodeId(null);
+    setShapeError(null);
+    setExportedCode(null);
+    setDiagramUrl(null);
+    setDiagramError(null);
+    setNeurocudaResult(null);
+    setLog([]);
+    setLossSeries([]);
+    setAccSeries([]);
+    setStatus("idle");
+  };
+
   const onViewDiagram = async () => {
     const payload = toGraphPayload(nodes, edges);
     try {
@@ -186,6 +238,20 @@ export default function App() {
         <span style={{ fontSize: 12, color: "#94a3b8" }}>
           drag-and-drop PyTorch architectures &middot; trailing Linear/ReLU layers run for real on NeuroCUDA
         </span>
+        <div style={{ marginLeft: "auto" }}>
+          {Object.entries(EXAMPLES).map(([key, ex]) => (
+            <button
+              key={key}
+              onClick={() => onLoadExample(key)}
+              style={{
+                fontSize: 12, padding: "5px 10px", borderRadius: 6,
+                border: "1px solid #334155", background: "#1e293b", color: "#e2e8f0", cursor: "pointer",
+              }}
+            >
+              Load example: {ex.label}
+            </button>
+          ))}
+        </div>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "220px 1fr 260px 340px", minHeight: 0 }}>
       <div style={{ borderRight: "1px solid #e5e7eb" }}>
