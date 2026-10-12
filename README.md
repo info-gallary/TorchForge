@@ -97,12 +97,18 @@ NVIDIA GPU are needed for the NeuroCUDA acceleration step and for
 architectures, training on PyTorch, diagrams, code export) works
 without a GPU.
 
-**Try it in one click:** the top-right "Load example: Residual branch
-(MNIST)" button loads a complete, working architecture onto the canvas
-— the exact Add-merge skip-connection model described above (92.4% on
-MNIST, NeuroCUDA-verified to 3.2e-5) — so you can hit Train immediately
-instead of building something from scratch first. See
-`webapp/frontend/src/examples.js`.
+**Try it in one click:** two "Load example" buttons in the header load
+a complete, working architecture onto the canvas, so you can hit Train
+immediately instead of building something from scratch first:
+
+- **Simple CNN (MNIST)** — a plain sequential conv/relu/pool ×2 →
+  dense head, no branching. 96.2% validation accuracy in one epoch;
+  its 3-layer Linear/ReLU head compiled and ran through real NeuroCUDA
+  CUDA kernels, matching PyTorch to within 8.6e-6.
+- **Residual branch (MNIST)** — the Add-merge skip-connection model
+  described above (92.4% on MNIST, NeuroCUDA-verified to 3.2e-5).
+
+See `webapp/frontend/src/examples.js`.
 
 To use NeuroCUDA on its own, as a standalone compiler:
 

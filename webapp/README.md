@@ -72,9 +72,9 @@ npm run dev
   `LiveChart.jsx` (a small inline-SVG chart, no charting library
   needed for a couple of series).
 - `api.js` — REST + WebSocket client.
-- `examples.js` — one-click demo architectures (currently: a residual
-  Add-merge skip-connection model for MNIST) that pre-populate the
-  canvas via the header's "Load example" button.
+- `examples.js` — one-click demo architectures that pre-populate the
+  canvas via the header's "Load example" buttons: a plain sequential
+  CNN and a residual Add-merge skip-connection model, both for MNIST.
 
 ## Tests
 
