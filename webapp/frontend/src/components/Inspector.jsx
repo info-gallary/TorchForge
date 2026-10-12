@@ -1,7 +1,9 @@
+import { categoryColor } from "../categoryColors";
+
 export default function Inspector({ selectedNode, layerSpecs, onChangeParam, onDelete }) {
   if (!selectedNode) {
     return (
-      <div style={{ padding: 12, color: "#888", fontSize: 13 }}>
+      <div style={{ padding: 16, color: "var(--text-faint)", fontSize: 13 }}>
         Click a layer on the canvas to edit its settings.
       </div>
     );
@@ -9,15 +11,19 @@ export default function Inspector({ selectedNode, layerSpecs, onChangeParam, onD
 
   const spec = layerSpecs[selectedNode.data.layerType];
   const paramDefs = Object.entries(spec?.params || {});
+  const color = categoryColor(selectedNode.data.category);
 
   return (
-    <div style={{ padding: 12 }}>
-      <h3 style={{ marginTop: 0 }}>{selectedNode.data.label}</h3>
+    <div style={{ padding: 16 }}>
+      <h3 style={{ margin: "0 0 14px", fontSize: 14, fontWeight: 700, display: "flex", alignItems: "center", gap: 7 }}>
+        <span style={{ width: 8, height: 8, borderRadius: "50%", background: color }} />
+        {selectedNode.data.label}
+      </h3>
       {paramDefs.length === 0 && (
-        <p style={{ fontSize: 12, color: "#888" }}>This layer has no settings.</p>
+        <p style={{ fontSize: 12.5, color: "var(--text-faint)" }}>This layer has no settings.</p>
       )}
       {paramDefs.map(([key, def]) => (
-        <label key={key} style={{ display: "block", marginBottom: 10, fontSize: 13 }}>
+        <label key={key} className="field-label">
           {key}
           <input
             type="number"
@@ -30,20 +36,13 @@ export default function Inspector({ selectedNode, layerSpecs, onChangeParam, onD
               const value = def.type === "float" ? parseFloat(raw) : parseInt(raw, 10);
               onChangeParam(selectedNode.id, key, Number.isNaN(value) ? def.default : value);
             }}
-            style={{ display: "block", width: "100%", marginTop: 4, padding: 4 }}
           />
         </label>
       ))}
       <button
+        className="btn"
         onClick={() => onDelete(selectedNode.id)}
-        style={{
-          marginTop: 8,
-          padding: "6px 12px",
-          background: "#fee2e2",
-          border: "1px solid #fca5a5",
-          borderRadius: 6,
-          cursor: "pointer",
-        }}
+        style={{ marginTop: 8, color: "var(--danger)", borderColor: "rgba(248,113,113,0.3)" }}
       >
         Delete layer
       </button>

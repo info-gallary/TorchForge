@@ -1,3 +1,28 @@
+:root {
+  --bg: #0b0f1a;
+  --panel: #11162780;
+  --panel-solid: #111627;
+  --surface: #161c2e;
+  --border: #242b42;
+  --border-soft: #1c2338;
+  --text: #e8ebf5;
+  --text-dim: #8a92b2;
+  --text-faint: #565e7d;
+
+  --accent: #7c6cf5;
+  --accent-2: #5b4fd6;
+  --neuro-a: #76b900;
+  --neuro-b: #22d3ee;
+  --success: #34d399;
+  --danger: #f87171;
+
+  --radius: 10px;
+  --radius-lg: 14px;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 16px -4px rgba(0, 0, 0, 0.5);
+  --shadow-glow-neuro: 0 0 0 1px rgba(118, 185, 0, 0.25), 0 8px 24px -8px rgba(118, 185, 0, 0.35);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -9,10 +34,154 @@ html, body, #root {
 }
 
 body {
-  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
-  color: #1e293b;
+  font-family: "Inter", system-ui, "Segoe UI", Roboto, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+code, pre, .mono {
+  font-family: "JetBrains Mono", ui-monospace, Consolas, monospace;
 }
 
 button {
   font-family: inherit;
 }
+
+/* scrollbars, dark-theme consistent */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+*::-webkit-scrollbar { width: 9px; height: 9px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+*::-webkit-scrollbar-thumb:hover { background: var(--text-faint); }
+
+/* ---- shared component classes ---- */
+
+.btn {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 9px 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+}
+.btn:hover:not(:disabled) {
+  border-color: var(--text-faint);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+.btn:active:not(:disabled) { transform: translateY(0); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  border-color: transparent;
+  color: #fff;
+}
+.btn-primary:hover:not(:disabled) {
+  box-shadow: 0 6px 20px -6px rgba(124, 108, 245, 0.6);
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text-dim);
+}
+.btn-ghost:hover:not(:disabled) {
+  color: var(--text);
+  background: var(--surface);
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-faint);
+  margin-bottom: 8px;
+}
+
+.field-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+}
+
+input[type="number"], input[type="text"], select {
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--text);
+  background: var(--panel-solid);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 7px 9px;
+  width: 100%;
+  margin-top: 5px;
+  outline: none;
+  transition: border-color 0.12s;
+}
+input[type="number"]:focus, input[type="text"]:focus, select:focus {
+  border-color: var(--accent);
+}
+input[type="checkbox"] {
+  accent-color: var(--accent);
+}
+
+/* NeuroCUDA brand treatment: shared between header badge and result card */
+.neuro-wordmark {
+  font-weight: 800;
+  background: linear-gradient(90deg, var(--neuro-a), var(--neuro-b));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* React Flow chrome, re-themed dark */
+.react-flow { background: var(--bg); }
+.react-flow__controls {
+  box-shadow: var(--shadow-md);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.react-flow__controls-button {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  fill: var(--text-dim);
+  color: var(--text-dim);
+}
+.react-flow__controls-button:hover { background: var(--panel-solid); fill: var(--text); }
+.react-flow__attribution { background: transparent !important; }
+.react-flow__attribution a { color: var(--text-faint) !important; }
+.react-flow__edge-path { stroke: var(--text-faint); }
+.react-flow__edge.selected .react-flow__edge-path { stroke: var(--accent); }
+.react-flow__handle { border-radius: 50%; }

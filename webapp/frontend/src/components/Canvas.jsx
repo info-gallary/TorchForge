@@ -85,8 +85,8 @@ export default function Canvas({ nodes, edges, setNodes, setEdges, layerSpecs, o
         onNodeClick={(_, node) => onSelectNode(node.id)}
         onPaneClick={() => onSelectNode(null)}
       >
-        <Background />
-        <Controls />
+        <Background color="#242b42" gap={18} size={1.5} />
+        <Controls showInteractive={false} />
       </ReactFlow>
     </div>
   );

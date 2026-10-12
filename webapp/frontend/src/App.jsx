@@ -227,34 +227,36 @@ export default function App() {
   };
 
   return (
-    <div style={{ display: "grid", gridTemplateRows: "48px 1fr", height: "100vh" }}>
+    <div style={{ display: "grid", gridTemplateRows: "60px 1fr", height: "100vh", background: "var(--bg)" }}>
       <div
         style={{
-          display: "flex", alignItems: "center", gap: 10, padding: "0 16px",
-          borderBottom: "1px solid #e5e7eb", background: "#0f172a", color: "#fff",
+          display: "flex", alignItems: "center", gap: 14, padding: "0 20px",
+          borderBottom: "1px solid var(--border)", background: "var(--panel-solid)",
+          boxShadow: "var(--shadow-sm)", zIndex: 1,
         }}
       >
-        <strong style={{ fontSize: 16 }}>TorchForge</strong>
-        <span style={{ fontSize: 12, color: "#94a3b8" }}>
-          drag-and-drop PyTorch architectures &middot; trailing Linear/ReLU layers run for real on NeuroCUDA
+        <strong style={{ fontSize: 18, fontWeight: 800, letterSpacing: "-0.01em" }}>TorchForge</strong>
+        <span
+          className="pill"
+          style={{ borderColor: "rgba(118,185,0,0.35)", background: "rgba(118,185,0,0.08)" }}
+          title="Trailing Linear/ReLU layers compile and run on real NeuroCUDA CUDA kernels"
+        >
+          <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--neuro-a)", boxShadow: "0 0 6px var(--neuro-a)" }} />
+          <span className="neuro-wordmark">NeuroCUDA</span>-accelerated
         </span>
-        <div style={{ marginLeft: "auto" }}>
+        <span style={{ fontSize: 12.5, color: "var(--text-dim)" }}>
+          drag-and-drop PyTorch architectures, compiled for real
+        </span>
+        <div style={{ marginLeft: "auto", display: "flex", gap: 8 }}>
           {Object.entries(EXAMPLES).map(([key, ex]) => (
-            <button
-              key={key}
-              onClick={() => onLoadExample(key)}
-              style={{
-                fontSize: 12, padding: "5px 10px", borderRadius: 6,
-                border: "1px solid #334155", background: "#1e293b", color: "#e2e8f0", cursor: "pointer",
-              }}
-            >
-              Load example: {ex.label}
+            <button key={key} className="btn btn-ghost" onClick={() => onLoadExample(key)}>
+              {ex.label}
             </button>
           ))}
         </div>
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "220px 1fr 260px 340px", minHeight: 0 }}>
-      <div style={{ borderRight: "1px solid #e5e7eb" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "230px 1fr 270px 360px", minHeight: 0 }}>
+      <div style={{ borderRight: "1px solid var(--border)", background: "var(--panel-solid)" }}>
         <NodePalette layerSpecs={layerSpecs} />
       </div>
       <div>
@@ -269,7 +271,7 @@ export default function App() {
           />
         </ReactFlowProvider>
       </div>
-      <div style={{ borderLeft: "1px solid #e5e7eb", borderRight: "1px solid #e5e7eb" }}>
+      <div style={{ borderLeft: "1px solid var(--border)", borderRight: "1px solid var(--border)", background: "var(--panel-solid)" }}>
         <Inspector
           selectedNode={selectedNode}
           layerSpecs={layerSpecs}
@@ -277,7 +279,7 @@ export default function App() {
           onDelete={onDeleteNode}
         />
       </div>
-      <div>
+      <div style={{ background: "var(--panel-solid)" }}>
         <TrainPanel
           datasets={datasets}
           dataset={dataset}

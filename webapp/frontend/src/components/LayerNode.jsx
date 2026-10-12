@@ -1,16 +1,5 @@
 import { Handle, Position } from "@xyflow/react";
-
-const CATEGORY_COLORS = {
-  conv: "#3b82f6",
-  pool: "#8b5cf6",
-  norm: "#06b6d4",
-  activation: "#f59e0b",
-  regularization: "#ef4444",
-  shape: "#64748b",
-  dense: "#10b981",
-  output: "#ec4899",
-  merge: "#9333ea",
-};
+import { categoryColor } from "../categoryColors";
 
 const MERGE_TYPES = new Set(["add_merge", "concat_merge"]);
 
@@ -21,64 +10,59 @@ function summarizeParams(params) {
 }
 
 export default function LayerNode({ data, selected }) {
-  const color = CATEGORY_COLORS[data.category] || "#64748b";
+  const color = categoryColor(data.category);
   const paramSummary = summarizeParams(data.params);
   const isMerge = MERGE_TYPES.has(data.layerType);
 
   return (
     <div
       style={{
-        border: `2px solid ${selected ? "#1d4ed8" : color}`,
-        borderRadius: 8,
-        background: "#fff",
-        minWidth: 160,
-        boxShadow: selected ? "0 0 0 2px rgba(29,78,216,0.3)" : "0 1px 3px rgba(0,0,0,0.15)",
+        border: `1.5px solid ${selected ? color : "var(--border)"}`,
+        borderRadius: 10,
+        background: "var(--surface)",
+        minWidth: 170,
+        boxShadow: selected ? `0 0 0 3px ${color}33, var(--shadow-md)` : "var(--shadow-sm)",
         fontSize: 13,
+        overflow: "hidden",
+        transition: "box-shadow 0.15s, border-color 0.15s",
       }}
     >
       {isMerge ? (
         <>
-          <Handle
-            type="target"
-            position={Position.Left}
-            id="in0"
-            style={{ background: color, top: "35%" }}
-          />
-          <Handle
-            type="target"
-            position={Position.Left}
-            id="in1"
-            style={{ background: color, top: "65%" }}
-          />
+          <Handle type="target" position={Position.Left} id="in0" style={{ background: color, top: "35%", width: 9, height: 9, border: "2px solid var(--surface)" }} />
+          <Handle type="target" position={Position.Left} id="in1" style={{ background: color, top: "65%", width: 9, height: 9, border: "2px solid var(--surface)" }} />
         </>
       ) : (
-        <Handle type="target" position={Position.Left} style={{ background: color }} />
+        <Handle type="target" position={Position.Left} style={{ background: color, width: 9, height: 9, border: "2px solid var(--surface)" }} />
       )}
       <div
         style={{
-          background: color,
-          color: "#fff",
-          padding: "4px 10px",
-          borderRadius: "6px 6px 0 0",
-          fontWeight: 600,
+          background: `linear-gradient(135deg, ${color}2e, ${color}14)`,
+          borderBottom: `1px solid ${color}40`,
+          color: "var(--text)",
+          padding: "6px 11px",
+          fontWeight: 700,
+          fontSize: 12.5,
+          display: "flex", alignItems: "center", gap: 6,
         }}
       >
+        <span style={{ width: 7, height: 7, borderRadius: "50%", background: color, flexShrink: 0 }} />
         {data.label}
       </div>
-      <div style={{ padding: "6px 10px" }}>
+      <div style={{ padding: "7px 11px" }}>
         {paramSummary && (
-          <div style={{ color: "#444", marginBottom: 4 }}>{paramSummary}</div>
+          <div className="mono" style={{ color: "var(--text-dim)", marginBottom: 4, fontSize: 11.5 }}>{paramSummary}</div>
         )}
         {isMerge && (
-          <div style={{ color: "#888", fontSize: 11 }}>in0 (top), in1 (bottom)</div>
+          <div style={{ color: "var(--text-faint)", fontSize: 10.5, marginBottom: 4 }}>in0 (top), in1 (bottom)</div>
         )}
         {data.shapeText ? (
-          <div style={{ color: "#16a34a", fontFamily: "monospace" }}>&rarr; {data.shapeText}</div>
+          <div className="mono" style={{ color: "var(--success)", fontSize: 12 }}>&rarr; {data.shapeText}</div>
         ) : (
-          <div style={{ color: "#aaa", fontStyle: "italic" }}>shape unknown</div>
+          <div style={{ color: "var(--text-faint)", fontStyle: "italic", fontSize: 11.5 }}>shape unknown</div>
         )}
       </div>
-      <Handle type="source" position={Position.Right} style={{ background: color }} />
+      <Handle type="source" position={Position.Right} style={{ background: color, width: 9, height: 9, border: "2px solid var(--surface)" }} />
     </div>
   );
 }
